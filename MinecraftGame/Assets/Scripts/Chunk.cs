@@ -21,6 +21,14 @@ public class Chunk : MonoBehaviour
 
             vertexIndex++;
         }
+
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
+
+        mesh.RecalculateNormals();
+
+        meshFilter.mesh = mesh;
     }
 
 }
