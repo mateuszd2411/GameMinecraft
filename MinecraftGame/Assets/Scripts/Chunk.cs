@@ -12,6 +12,7 @@ public class Chunk : MonoBehaviour
         int vertexIndex = 0;
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
+        List<Vector2> uvs = new List<Vector2>();
 
         for (int i = 0; i < 6; i++)
         {
@@ -19,12 +20,15 @@ public class Chunk : MonoBehaviour
             vertices.Add(VoxelData.voxelVerts[triangelIndex]);
             triangles.Add(vertexIndex);
 
+            uvs.Add(Vector2.zero);
+
             vertexIndex++;
         }
 
         Mesh mesh = new Mesh();
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
+        mesh.uv = uvs.ToArray();
 
         mesh.RecalculateNormals();
 
