@@ -12,7 +12,16 @@ public class Chunk : MonoBehaviour
     List<int> triangles = new List<int>();
     List<Vector2> uvs = new List<Vector2>();
 
+    bool[,,] voxelMap = new bool[VoxelData.ChunkWidth, VoxelData.ChunkHeight, VoxelData.ChunkWidth];
+
     void Start()
+    {
+        PopulateVoxelMap ();
+        CreateMeshData();
+        CreateMash();
+    }
+
+    void PopulateVoxelMap ()
     {
         for (int y = 0; y < VoxelData.ChunkHeight; y++)
         {
@@ -20,28 +29,57 @@ public class Chunk : MonoBehaviour
             {
                 for (int z = 0; z < VoxelData.ChunkWidth; z++)
                 {
-                    AddVoxelDataToChunk(new Vector3(x,y,z));
+                    voxelMap[x, y, z] = true;
 
                 }
             }
         }
+    }
 
-        CreateMash();
+    void CreateMeshData()
+    {
+        for (int y = 0; y < VoxelData.ChunkHeight; y++)
+        {
+            for (int x = 0; x < VoxelData.ChunkWidth; x++)
+            {
+                for (int z = 0; z < VoxelData.ChunkWidth; z++)
+                {
+                    AddVoxelDataToChunk(new Vector3(x, y, z));
+
+                }
+            }
+        }
+    }
+
+    bool CheckVoxel (Vector3 pos) {
+
+		int x = Mathf.FloorToInt (pos.x);
+		int y = Mathf.FloorToInt (pos.y);
+		int z = Mathf.FloorToInt (pos.z);
+
+        if (x < 0 || x > VoxelData.ChunkWidth - 1 || y < 0 || y > VoxelData.ChunkHeight - 1 || z < 0 || z > VoxelData.ChunkWidth - 1)
+            return false;
+
+        return voxelMap[x, y, z];
+
     }
 
     void AddVoxelDataToChunk(Vector3 pos)
     {
         for (int p = 0; p < 6; p++)
         {
-            for (int i = 0; i < 6; i++)
+            if (!CheckVoxel(pos + VoxelData.faceChecks[p]))
             {
-                int triangelIndex = VoxelData.voxelTris[p, i];
-                vertices.Add(VoxelData.voxelVerts[triangelIndex] + pos);
-                triangles.Add(vertexIndex);
+                for (int i = 0; i < 6; i++)
+                {
+                    int triangelIndex = VoxelData.voxelTris[p, i];
+                    vertices.Add(VoxelData.voxelVerts[triangelIndex] + pos);
+                    triangles.Add(vertexIndex);
 
-                uvs.Add(VoxelData.voxelUvs[i]);
+                    uvs.Add(VoxelData.voxelUvs[i]);
 
-                vertexIndex++;
+                    vertexIndex++;
+                }
             }
         }
     }
