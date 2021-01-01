@@ -66,22 +66,32 @@ public class Chunk : MonoBehaviour
 
     void AddVoxelDataToChunk(Vector3 pos)
     {
+
         for (int p = 0; p < 6; p++)
         {
+
             if (!CheckVoxel(pos + VoxelData.faceChecks[p]))
             {
-                for (int i = 0; i < 6; i++)
-                {
-                    int triangelIndex = VoxelData.voxelTris[p, i];
-                    vertices.Add(VoxelData.voxelVerts[triangelIndex] + pos);
-                    triangles.Add(vertexIndex);
 
-                    uvs.Add(VoxelData.voxelUvs[i]);
+                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 0]]);
+                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 1]]);
+                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 2]]);
+                vertices.Add(pos + VoxelData.voxelVerts[VoxelData.voxelTris[p, 3]]);
+                uvs.Add(VoxelData.voxelUvs[0]);
+                uvs.Add(VoxelData.voxelUvs[1]);
+                uvs.Add(VoxelData.voxelUvs[2]);
+                uvs.Add(VoxelData.voxelUvs[3]);
+                triangles.Add(vertexIndex);
+                triangles.Add(vertexIndex + 1);
+                triangles.Add(vertexIndex + 2);
+                triangles.Add(vertexIndex + 2);
+                triangles.Add(vertexIndex + 1);
+                triangles.Add(vertexIndex + 3);
+                vertexIndex += 4;
 
-                    vertexIndex++;
-                }
             }
         }
+
     }
 
     void CreateMash()
